@@ -1,19 +1,28 @@
 package eu.arngrimur.bkk.services.rest.parameters;
 
 import eu.arngrimur.bkk.services.rest.validation.InputValidation;
-import eu.arngrimur.bkk.services.rest.validation.ValidateNumber;
 import eu.arngrimur.bkk.services.rest.validation.ValidateString;
 
 public class UserParameters implements InputValidation {
-    String username;
-    String password;
-    String firstName;
-    String lastName;
-    String street;
+    @ValidateString(regex = "[\\p{Lower}]{3,}")
+    private String username;
+    /**
+     * Password must be at least 8 characters long, contain 1 lower case charecter, on upper case character,
+     * one special character and no whitespace
+     */
+    @ValidateString(regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\p{Punct})(?=\\S+$).{8,}$")
+    private String password;
+    @ValidateString(regex = "[\\p{Alpha}\\p{Space}]+")
+    private String firstName;
+    @ValidateString(regex = "[\\p{Alpha}\\p{Space}]+")
+    private String lastName;
+    @ValidateString(regex = "[\\p{Alpha}\\p{Space}]+")
+    private String street;
+    @ValidateString(regex = "[\\p{Digit}]+")
     String postbox;
-    String city;
+    @ValidateString(regex = "[\\p{Alpha}\\p{Space}]+")
+    private String city;
 
-    @ValidateString
     public String getUsername() {
         return username;
     }
@@ -22,7 +31,6 @@ public class UserParameters implements InputValidation {
         this.username = username;
     }
 
-    @ValidateString
     public String getPassword() {
         return password;
     }
@@ -30,7 +38,7 @@ public class UserParameters implements InputValidation {
     public void setPassword(String password) {
         this.password = password;
     }
-    @ValidateString
+
     public String getFirstName() {
         return firstName;
     }
@@ -38,7 +46,7 @@ public class UserParameters implements InputValidation {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    @ValidateString
+
     public String getLastName() {
         return lastName;
     }
@@ -46,7 +54,7 @@ public class UserParameters implements InputValidation {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    @ValidateString
+
     public String getStreet() {
         return street;
     }
@@ -54,7 +62,7 @@ public class UserParameters implements InputValidation {
     public void setStreet(String street) {
         this.street = street;
     }
-    @ValidateString
+
     public String getPostbox() {
         return postbox;
     }
@@ -62,7 +70,7 @@ public class UserParameters implements InputValidation {
     public void setPostbox(String postbox) {
         this.postbox = postbox;
     }
-    @ValidateString
+
     public String getCity() {
         return city;
     }

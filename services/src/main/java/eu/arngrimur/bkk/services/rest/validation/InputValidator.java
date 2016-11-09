@@ -1,11 +1,7 @@
 package eu.arngrimur.bkk.services.rest.validation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-
 import javax.inject.Named;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,29 +11,34 @@ public class InputValidator {
     private Set<String> errors = new HashSet<>();
 
     public void validate(InputValidation object) throws InputValidationException {
-        String methodName = null;
-        Method[] methods = object.getClass().getDeclaredMethods();
-        for (Method method : methods) {
-            methodName = method.getName();
-            Field field = FieldUtils.getField(object.getClass(), methodName.substring(3, methodName.length()), true);
-            parseNumber(object, method, field);
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            validate(object, field);
         }
         if (!errors.isEmpty()) {
             throw new InputValidationException(errors);
         }
     }
 
-    private void parseNumber(InputValidation object, Method method, Field field) {
+    private void validate(InputValidation object, Field field) {
         try {
-            ValidateNumber validateNumber = method.getAnnotation(ValidateNumber.class);
-            if (validateNumber != null) {
+            ValidateString validateString = field.getAnnotation(ValidateString.class);
+            if (validateString != null) {
+                field.setAccessible(true);
                 String fieldValue = (String) field.get(object);
-                if (StringUtils.isBlank(fieldValue)) {
-                    errors.add(fieldValue + " can not empty.");
+                if (null == fieldValue) {
+                    errors.add(field.getName() + " can not be null");
                     return;
                 }
-                if (!StringUtils.isNumeric(fieldValue)) {
-                    errors.add(field.getName() + " must be a number.");
+                if (fieldValue.length() < validateString.minLen()) {
+                    errors.add(fieldValue + " must have at least " + validateString.minLen() + " characters");
+                }
+                if (fieldValue.length() > validateString.maxLen()) {
+                    errors.add(fieldValue + " can not be longer than " + validateString.maxLen() + " characters");
+                }
+
+                if (!fieldValue.matches(validateString.regex())) {
+                    errors.add(fieldValue + " does not satisfy regexp '" + validateString.regex() + "'");
                 }
             }
         } catch (IllegalAccessException e) {
