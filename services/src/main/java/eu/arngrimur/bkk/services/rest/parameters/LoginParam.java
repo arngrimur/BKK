@@ -2,13 +2,18 @@ package eu.arngrimur.bkk.services.rest.parameters;
 
 
 import eu.arngrimur.bkk.services.rest.validation.InputValidation;
-import eu.arngrimur.bkk.services.rest.validation.ValidateString;
+import eu.arngrimur.utils.validation.ValidateString;
 
-public final class LoginParam  implements InputValidation {
+public class LoginParam  implements InputValidation {
+    @ValidateString(regex = "[\\p{Lower}]{3,}")
     private String username;
+    /**
+     * Password must be at least 8 characters long, contain 1 lower case charecter, on upper case character,
+     * one special character and no whitespace
+     */
+    @ValidateString(regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\p{Punct})(?=\\S+$).{8,}$")
     private String password;
 
-    @ValidateString
     public String getUsername() {
         return username;
     }
@@ -17,7 +22,6 @@ public final class LoginParam  implements InputValidation {
         this.username = username;
     }
 
-    @ValidateString
     public String getPassword() {
         return password;
     }

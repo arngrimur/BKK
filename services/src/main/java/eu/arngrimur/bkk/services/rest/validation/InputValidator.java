@@ -1,5 +1,7 @@
 package eu.arngrimur.bkk.services.rest.validation;
 
+import eu.arngrimur.utils.validation.ValidateString;
+
 import javax.inject.Named;
 import java.lang.reflect.Field;
 import java.util.HashSet;

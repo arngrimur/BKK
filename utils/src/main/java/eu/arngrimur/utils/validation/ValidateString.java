@@ -1,4 +1,4 @@
-package eu.arngrimur.bkk.services.rest.validation;
+package eu.arngrimur.utils.validation;
 
 import java.lang.annotation.*;
 
